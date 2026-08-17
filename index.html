@@ -1,0 +1,449 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>A Special Surprise for You ❤️</title>
+  <link href="https://fonts.googleapis.com/css2?family=Caveat:wght@600&family=Poppins:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    * {
+      box-sizing: border-box;
+      margin: 0;
+      padding: 0;
+      user-select: none;
+      -webkit-tap-highlight-color: transparent;
+    }
+
+    body {
+      background: radial-gradient(circle at top center, #240b36, #0c0014);
+      min-height: 100vh;
+      display: flex;
+      justify-content: center;
+      align-items: center;
+      font-family: 'Poppins', sans-serif;
+      color: #fff;
+      overflow: hidden;
+      position: relative;
+    }
+
+    #hearts-canvas {
+      position: fixed;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      pointer-events: none;
+      z-index: 1;
+    }
+
+    .app-container {
+      position: relative;
+      z-index: 2;
+      width: 100%;
+      max-width: 390px;
+      height: 90vh;
+      max-height: 780px;
+      background: rgba(26, 11, 41, 0.7);
+      backdrop-filter: blur(20px);
+      border: 1px solid rgba(255, 255, 255, 0.12);
+      border-radius: 36px;
+      box-shadow: 0 20px 50px rgba(0, 0, 0, 0.6), inset 0 0 20px rgba(255, 105, 180, 0.1);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 24px;
+      text-align: center;
+      overflow: hidden;
+    }
+
+    .screen {
+      display: none;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      width: 100%;
+      height: 100%;
+      animation: fadeIn 0.6s ease forwards;
+    }
+
+    .screen.active {
+      display: flex;
+    }
+
+    @keyframes fadeIn {
+      from { opacity: 0; transform: translateY(15px) scale(0.96); }
+      to { opacity: 1; transform: translateY(0) scale(1); }
+    }
+
+    .sticker {
+      font-size: 68px;
+      margin-bottom: 12px;
+      animation: bounce 2s infinite ease-in-out;
+      filter: drop-shadow(0 8px 16px rgba(255, 105, 180, 0.3));
+    }
+
+    @keyframes bounce {
+      0%, 100% { transform: translateY(0); }
+      50% { transform: translateY(-10px); }
+    }
+
+    h1 {
+      font-size: 22px;
+      font-weight: 600;
+      color: #ffd1dc;
+      margin-bottom: 8px;
+      text-shadow: 0 0 12px rgba(255, 182, 193, 0.4);
+    }
+
+    p.subtitle {
+      font-size: 13px;
+      color: rgba(255, 255, 255, 0.75);
+      margin-bottom: 24px;
+    }
+
+    .btn-action {
+      background: linear-gradient(135deg, #ff416c, #ff4b2b);
+      color: #fff;
+      border: none;
+      padding: 12px 28px;
+      font-size: 14px;
+      font-weight: 600;
+      border-radius: 25px;
+      cursor: pointer;
+      box-shadow: 0 8px 20px rgba(255, 75, 43, 0.4);
+      transition: all 0.25s ease;
+    }
+
+    .btn-action:hover {
+      transform: scale(1.05);
+      box-shadow: 0 10px 25px rgba(255, 75, 43, 0.6);
+    }
+
+    .btn-action:active {
+      transform: scale(0.96);
+    }
+
+    .meter-title {
+      font-size: 13px;
+      letter-spacing: 1px;
+      color: #ff9ec7;
+      margin-bottom: 10px;
+    }
+
+    .percentage {
+      font-family: 'Caveat', cursive;
+      font-size: 64px;
+      font-weight: 700;
+      color: #ff7597;
+      margin-bottom: 15px;
+      text-shadow: 0 0 20px rgba(255, 117, 151, 0.6);
+    }
+
+    .progress-bar-wrap {
+      width: 80%;
+      height: 12px;
+      background: rgba(255, 255, 255, 0.1);
+      border-radius: 20px;
+      overflow: hidden;
+      margin-bottom: 15px;
+      border: 1px solid rgba(255, 255, 255, 0.15);
+    }
+
+    .progress-bar-fill {
+      height: 100%;
+      width: 0%;
+      background: linear-gradient(90deg, #ff416c, #ff4b2b, #ff7597);
+      border-radius: 20px;
+      transition: width 0.1s linear;
+      box-shadow: 0 0 12px #ff416c;
+    }
+
+    .warning-text {
+      font-size: 11px;
+      font-weight: 700;
+      color: #ffd166;
+      letter-spacing: 0.8px;
+      opacity: 0;
+      transition: opacity 0.4s ease;
+      margin-bottom: 24px;
+    }
+
+    .secret-cards {
+      display: flex;
+      flex-direction: column;
+      gap: 12px;
+      width: 100%;
+      margin: 18px 0;
+    }
+
+    .secret-box {
+      background: rgba(255, 255, 255, 0.08);
+      border: 1px solid rgba(255, 192, 203, 0.2);
+      border-radius: 16px;
+      padding: 14px 16px;
+      font-size: 13px;
+      color: #ffccd5;
+      cursor: pointer;
+      transition: all 0.3s ease;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .secret-box.revealed {
+      background: rgba(255, 105, 180, 0.18);
+      border-color: rgba(255, 105, 180, 0.5);
+      color: #ffffff;
+      transform: translateY(-2px);
+    }
+
+    .envelope-box {
+      cursor: pointer;
+      position: relative;
+      margin: 20px 0;
+      transition: transform 0.3s ease;
+    }
+
+    .envelope-box:hover {
+      transform: scale(1.06);
+    }
+
+    .envelope-icon {
+      font-size: 80px;
+      filter: drop-shadow(0 10px 20px rgba(255, 105, 180, 0.4));
+    }
+
+    .tap-hint {
+      font-size: 12px;
+      color: rgba(255, 255, 255, 0.6);
+      margin-top: 10px;
+    }
+
+    .letter-card {
+      background: #fff6f8;
+      color: #2b1b22;
+      border-radius: 20px;
+      padding: 22px 18px;
+      width: 95%;
+      box-shadow: 0 15px 35px rgba(0, 0, 0, 0.4);
+      position: relative;
+    }
+
+    .letter-card .cat-avatar {
+      font-size: 42px;
+      margin-bottom: 6px;
+      display: inline-block;
+    }
+
+    .letter-text {
+      font-family: 'Caveat', cursive;
+      font-size: 18px;
+      line-height: 1.45;
+      color: #4a2835;
+      text-align: center;
+      margin: 8px 0;
+    }
+  </style>
+</head>
+<body>
+
+  <canvas id="hearts-canvas"></canvas>
+
+  <div class="app-container">
+    <div class="screen active" id="screen-1">
+      <div class="sticker">🥰</div>
+      <h1>Hey cutiepie! ❤️</h1>
+      <p class="subtitle">Do you even have any idea how cute you are?</p>
+      <button class="btn-action" onclick="goToScreen(2); startCutenessScan();">Let's Check 🥺✨</button>
+    </div>
+
+    <div class="screen" id="screen-2">
+      <p class="meter-title">MEASURING YOUR CUTENESS...</p>
+      <div class="percentage" id="meter-counter">0%</div>
+      <div class="progress-bar-wrap">
+        <div class="progress-bar-fill" id="meter-fill"></div>
+      </div>
+      <p class="warning-text" id="warning-text">⚠️ WARNING: CUTENESS LEVEL EXCEEDED SAFE LIMITS!</p>
+      <button class="btn-action" id="meter-next-btn" style="display: none;" onclick="goToScreen(3)">Continue 💖</button>
+    </div>
+
+    <div class="screen" id="screen-3">
+      <div style="font-size: 34px; margin-bottom: 6px;">✨💖✨</div>
+      <h1>Tap each to reveal</h1>
+      <p class="subtitle" style="margin-bottom: 10px;">Three tiny truths for you...</p>
+
+      <div class="secret-cards">
+        <div class="secret-box" onclick="revealSecret(this, '🌸 You make everyday feel so special.')">
+          <span>💖 Tap to open</span>
+        </div>
+        <div class="secret-box" onclick="revealSecret(this, '✨ Your smile is literally my favorite view.')">
+          <span>💖 Tap to open</span>
+        </div>
+        <div class="secret-box" onclick="revealSecret(this, '🧸 I am so grateful to have you in my life.')">
+          <span>💖 Tap to open</span>
+        </div>
+      </div>
+
+      <button class="btn-action" id="secrets-next-btn" style="margin-top: 10px; display: none;" onclick="goToScreen(4)">Open Your Letter 💌</button>
+    </div>
+
+    <div class="screen" id="screen-4">
+      <h1 style="font-family: 'Caveat', cursive; font-size: 30px;">A little note for you</h1>
+      <div class="envelope-box" onclick="openLetter()">
+        <div class="envelope-icon">💌</div>
+      </div>
+      <p class="tap-hint">Tap envelope to open</p>
+    </div>
+
+    <div class="screen" id="screen-5">
+      <p style="font-family: 'Caveat', cursive; font-size: 24px; color: #ffd1dc; margin-bottom: 8px;">A little note for you 🌸</p>
+      <div class="letter-card">
+        <div class="cat-avatar">🐱💌</div>
+        <div class="letter-text">
+          My love, you never leave my mind for a single second. You are my favorite person, my safest comfort, and the brightest part of every single day.<br><br>
+          I miss your smile, your warmth, and just being around you. Counting down every moment until I get to see you next.<br><br>
+          I love you with all my heart. ❤️
+        </div>
+      </div>
+      <button class="btn-action" style="margin-top: 18px;" onclick="goToScreen(1)">Replay ✨</button>
+    </div>
+  </div>
+
+  <script>
+    function goToScreen(index) {
+      document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+      const nextScreen = document.getElementById(`screen-${index}`);
+      if (nextScreen) nextScreen.classList.add('active');
+    }
+
+    const audioCtx = new (window.AudioContext || window.webkitAudioContext)();
+    function playChime(freq = 600, duration = 0.15) {
+      if (audioCtx.state === 'suspended') audioCtx.resume();
+      const osc = audioCtx.createOscillator();
+      const gain = audioCtx.createGain();
+      osc.type = 'sine';
+      osc.frequency.setValueAtTime(freq, audioCtx.currentTime);
+      gain.gain.setValueAtTime(0.1, audioCtx.currentTime);
+      gain.gain.exponentialRampToValueAtTime(0.001, audioCtx.currentTime + duration);
+      osc.connect(gain);
+      gain.connect(audioCtx.destination);
+      osc.start();
+      osc.stop(audioCtx.currentTime + duration);
+    }
+
+    function startCutenessScan() {
+      let percent = 0;
+      const counter = document.getElementById('meter-counter');
+      const fill = document.getElementById('meter-fill');
+      const warning = document.getElementById('warning-text');
+      const btn = document.getElementById('meter-next-btn');
+
+      counter.innerText = '0%';
+      fill.style.width = '0%';
+      warning.style.opacity = '0';
+      btn.style.display = 'none';
+
+      const interval = setInterval(() => {
+        percent += Math.floor(Math.random() * 4) + 2;
+        if (percent > 120) percent = 120;
+
+        counter.innerText = `${percent}%`;
+        fill.style.width = `${Math.min(percent, 100)}%`;
+        playChime(350 + percent * 3, 0.05);
+
+        if (percent >= 120) {
+          clearInterval(interval);
+          warning.style.opacity = '1';
+          btn.style.display = 'inline-block';
+          playChime(880, 0.3);
+        }
+      }, 40);
+    }
+
+    let revealedCount = 0;
+    function revealSecret(element, text) {
+      if (element.classList.contains('revealed')) return;
+      playChime(520, 0.2);
+      element.classList.add('revealed');
+      element.innerHTML = text;
+      revealedCount++;
+
+      if (revealedCount >= 3) {
+        document.getElementById('secrets-next-btn').style.display = 'inline-block';
+      }
+    }
+
+    function openLetter() {
+      playChime(700, 0.3);
+      goToScreen(5);
+      triggerConfetti();
+    }
+
+    const canvas = document.getElementById('hearts-canvas');
+    const ctx = canvas.getContext('2d');
+    let width = (canvas.width = window.innerWidth);
+    let height = (canvas.height = window.innerHeight);
+
+    window.addEventListener('resize', () => {
+      width = canvas.width = window.innerWidth;
+      height = canvas.height = window.innerHeight;
+    });
+
+    const particles = [];
+    const heartColors = ['#ff4d6d', '#ff758f', '#ff8fa3', '#c9184a', '#ffccd5'];
+
+    function createParticle(isConfetti = false) {
+      return {
+        x: Math.random() * width,
+        y: isConfetti ? height + 20 : Math.random() * height,
+        size: Math.random() * 12 + 6,
+        speedY: isConfetti ? -(Math.random() * 6 + 3) : -(Math.random() * 1 + 0.5),
+        speedX: (Math.random() - 0.5) * 1.5,
+        color: heartColors[Math.floor(Math.random() * heartColors.length)],
+        opacity: isConfetti ? 1 : Math.random() * 0.5 + 0.2,
+      };
+    }
+
+    for (let i = 0; i < 25; i++) {
+      particles.push(createParticle());
+    }
+
+    function triggerConfetti() {
+      for (let i = 0; i < 40; i++) {
+        particles.push(createParticle(true));
+      }
+    }
+
+    function drawHeart(x, y, size, color, opacity) {
+      ctx.save();
+      ctx.globalAlpha = opacity;
+      ctx.fillStyle = color;
+      ctx.beginPath();
+      const topCurveHeight = size * 0.3;
+      ctx.moveTo(x, y + topCurveHeight);
+      ctx.bezierCurveTo(x, y, x - size / 2, y, x - size / 2, y + topCurveHeight);
+      ctx.bezierCurveTo(x - size / 2, y + (size + topCurveHeight) / 2, x, y + (size + topCurveHeight) / 1.4, x, y + size);
+      ctx.bezierCurveTo(x, y + (size + topCurveHeight) / 1.4, x + size / 2, y + (size + topCurveHeight) / 2, x + size / 2, y + topCurveHeight);
+      ctx.bezierCurveTo(x + size / 2, y, x, y, x, y + topCurveHeight);
+      ctx.closePath();
+      ctx.fill();
+      ctx.restore();
+    }
+
+    function animate() {
+      ctx.clearRect(0, 0, width, height);
+      particles.forEach((p, idx) => {
+        p.y += p.speedY;
+        p.x += p.speedX;
+        drawHeart(p.x, p.y, p.size, p.color, p.opacity);
+
+        if (p.y < -30) {
+          particles[idx] = createParticle();
+        }
+      });
+      requestAnimationFrame(animate);
+    }
+    animate();
+  </script>
+</body>
+</html>
